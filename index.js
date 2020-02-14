@@ -15,6 +15,8 @@ const CHAIN_TREE_NOTE_PATH = 'notebook/notes'
  */
 async function createNotebook() {
   console.log('creating notebook')
+  
+  let t = new Timer()
   let community = await tupelo.Community.getDefault()
 
   // Create a digital signature for the user
@@ -23,7 +25,9 @@ async function createNotebook() {
   // use the Tupelo SDK to create a new empty ChainTree to write our notebook entries into
   const tree = await tupelo.ChainTree.newEmptyTree(community.blockservice, key)
   let obj = await identifierObj(key, tree)
-  return writeIdentifierFile(obj)
+  writeIdentifierFile(obj)
+  t.stop()
+  return 
 }
 
 /**
@@ -95,6 +99,8 @@ function writeIdentifierFile(configObj) {
  * @param {*} note
  */
 async function addNote(note) {
+  let t = new Timer()
+
   if (!idFileExists()) {
     console.error(
       'Error: you must register before you can record notes. use "npm run dev:createNotebook"'
@@ -123,9 +129,12 @@ async function addNote(note) {
   await c.playTransactions(tree, [
     tupelo.setDataTransaction(CHAIN_TREE_NOTE_PATH, notes)
   ])
+  t.stop()
 }
 
 async function showNotes() {
+  let t = new Timer()
+
   if (!idFileExists()) {
     console.error('Error: you must register before you can print notes.')
     return
@@ -143,6 +152,7 @@ async function showNotes() {
   } else {
     console.log('----No Notes-----')
   }
+  t.stop()
 }
 
 /////// utils ///////
@@ -154,6 +164,29 @@ function idFileExists() {
 function addTimestamp(note) {
   let ts = new Date().getTime().toString()
   return ts + '::' + note
+}
+
+// let measureTime = {
+//   start: -1,
+//   end: -1,
+//   begin: () => this.start = Date.now(),
+//   finish: () => this.end =  Date.now() - this.start
+// }
+
+class Timer {
+  constructor(){
+    this.started = Date.now()
+    this.ended = undefined
+  }
+  stop(){
+    this.ended = Date.now()
+    console.log(`(finished in ${this.ended - this.started} ms)`)
+    return this.ended - this.started
+  }
+  result(){ 
+    if (this.ended === undefined) return undefined
+    return this.ended - this.started 
+  }
 }
 
 yargs

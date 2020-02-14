@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev:createNotebook": "node -e 'require(\"./index.js\").createNotebook()'",
-    "dev:showNotes": "node -e 'require(\"./index.js\").showNotes()'",
-    "dev": "node index.js"
+    "register": "node ./index.js register",
+    "print": "node ./index.js print",
+    "add": "node ./index.js add -n "
   },
   "//": {
     "comments": [

@@ -1,10 +1,78 @@
 # tupelo docs - notebook tutoral app
 
-docs https://docs.tupelo.org/tutorials/notebook.html
+tutorial docs: https://docs.tupelo.org/tutorials/notebook.html
 
 reference implementation (maybe?): https://docs.tupelo.org/tutorials/notebook/index3_js (also local as `docs/index3.js`)
 
-### selected steps from tutorial 
+
+### setup & usage
+
+```sh
+# get repo, install packages
+git clone https://github.com/100ideas/tupelo-tutorial-notebook.git
+cd tupelo-tutorial-notebook
+npm install
+
+# initialize chaintree for app 
+# - stores chaintree IPLD data in `default/`
+# - stores chaintree private key & identifiers in `.notebook-identifiers` (.gitignored)
+npm run register
+
+# create note with contents <string>
+npm run add <string>
+
+# print list of notes
+npm run print
+```
+
+### example output
+```bash
+torchy:~/d/d/0/2/t/notebook-demo on master
+$ npm run register
+
+creating notebook
+saving identifierFile:  { unsafePrivateKey: 'ajkJ6STNw1ZAhyOmufKd7+Pde2NQjCYvw0AaUaWYiMI=',
+  chainId: 'did:tupelo:0xAf2386b5fe6baa8c6e5323d16B23941F3406e3af' }
+(finished in 7227 ms)
+
+
+torchy:~/d/d/0/2/t/notebook-demo on master
+$ npm run print
+
+nothing was resolvable
+----No Notes-----
+(finished in 9902 ms)
+
+
+torchy:~/d/d/0/2/t/notebook-demo on master
+$ npm run add "hi"
+
+nothing was resolvable
+saving new notes:  [ '1581677818670::hi' ]
+(finished in 9759 ms)
+
+
+torchy:~/d/d/0/2/t/notebook-demo on master
+$ npm run add "these commands take a while!"
+
+found tree
+saving new notes:  [ '1581677818670::hi',
+  '1581677844160::these commands take a while!' ]
+(finished in 12067 ms)
+
+
+torchy:~/d/d/0/2/t/notebook-demo on master
+$ npm run print
+
+found tree
+----Notes----
+1581677818670::hi
+1581677844160::these commands take a while!
+(finished in 9675 ms)
+```
+
+
+### selected content from [tutorial docs](https://docs.tupelo.org/tutorials/notebook.html)
 
 #### Testing notebook creation
 
