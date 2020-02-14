@@ -1,12 +1,9 @@
 const tupelo = require('tupelo-wasm-sdk')
 const fs = require('fs')
+const yargs = require('yargs')
 
 const LOCAL_ID_PATH = './.notebook-identifiers'
 const CHAIN_TREE_NOTE_PATH = 'notebook/notes'
-
-// did ths index.js script get executed by `npm run dev:createNotebook'?
-// const EXIT_ASAP = process.execArgv.join('|').indexOf('createNotebook') >= 0 
-const EXIT_ASAP = process.execArgv[0] === '-e' // hack to detect npm run dev:<cmd>s
 
 /**
  * The community the SDK is connecting to in this example is the Tupelo TestNet.
@@ -17,8 +14,6 @@ const EXIT_ASAP = process.execArgv[0] === '-e' // hack to detect npm run dev:<cm
  * WASM SDK is as easy to use as a standard database API.
  */
 async function createNotebook() {
-  if(EXIT_ASAP) console.log("notebook index.js:crateNotebook() will exit after completion")
-
   console.log('creating notebook')
   let community = await tupelo.Community.getDefault()
 
@@ -89,7 +84,6 @@ function writeIdentifierFile(configObj) {
   console.log('saving identifierFile: ', configObj)
   let data = JSON.stringify(configObj)
   fs.writeFileSync(LOCAL_ID_PATH, data)
-  if(EXIT_ASAP) process.exit()
 }
 
 /**
@@ -102,7 +96,9 @@ function writeIdentifierFile(configObj) {
  */
 async function addNote(note) {
   if (!idFileExists()) {
-    console.error('Error: you must register before you can record notes. use "npm run dev:createNotebook"')
+    console.error(
+      'Error: you must register before you can record notes. use "npm run dev:createNotebook"'
+    )
     return
   }
 
@@ -129,26 +125,24 @@ async function addNote(note) {
   ])
 }
 
-
 async function showNotes() {
   if (!idFileExists()) {
-      console.error("Error: you must register before you can print notes.");
-      return;
+    console.error('Error: you must register before you can print notes.')
+    return
   }
 
-  let { tree } = await readIdentifierFile();
+  let { tree } = await readIdentifierFile()
   let resp = await tree.resolveData(CHAIN_TREE_NOTE_PATH)
   let notes = resp.value
 
   if (notes instanceof Array) {
-      console.log('----Notes----');
-      notes.forEach(function (note) {
-          console.log(note);
-      });
+    console.log('----Notes----')
+    notes.forEach(function(note) {
+      console.log(note)
+    })
   } else {
-      console.log('----No Notes-----');
+    console.log('----No Notes-----')
   }
-  if(EXIT_ASAP) process.exit()
 }
 
 /////// utils ///////
@@ -162,8 +156,36 @@ function addTimestamp(note) {
   return ts + '::' + note
 }
 
-// module.exports.createNotebook = createNotebook
-module.exports = {
-  createNotebook,
-  showNotes
-}
+yargs
+  .command(
+    'register',
+    'Register a new notebook chain tree',
+    yargs => {},
+    async argv => {
+      await createNotebook()
+      process.exit(0)
+    }
+  )
+  .command(
+    'add',
+    'Save a note',
+    yargs => {
+      yargs
+        .describe('n', 'Save a note')
+        .alias('n', 'note')
+        .demand('n')
+    },
+    async argv => {
+      await addNote(argv.n)
+      process.exit(0)
+    }
+  )
+  .command(
+    ['print', '$0'], // $0 makes this the default command
+    'Print saved notes',
+    yargs => {},
+    async argv => {
+      await showNotes()
+      process.exit(0)
+    }
+  ).argv

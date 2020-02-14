@@ -2,7 +2,7 @@
 
 docs https://docs.tupelo.org/tutorials/notebook.html
 
-reference implementation: https://docs.tupelo.org/tutorials/notebook/index3_js
+reference implementation (maybe?): https://docs.tupelo.org/tutorials/notebook/index3_js (also local as `docs/index3.js`)
 
 ### selected steps from tutorial 
 
