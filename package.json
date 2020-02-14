@@ -4,7 +4,10 @@
   "description": "tupelo tutorial https://docs.tupelo.org/tutorials/notebook.html",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:createNotebook": "node -e 'require(\"./index.js\").createNotebook()'",
+    "dev:showNotes": "node -e 'require(\"./index.js\").showNotes()'",
+    "dev": "node index.js"
   },
   "//": "note: multicodec version is: To address a temporary ipfs dependency issue",
   "dependencies": {
